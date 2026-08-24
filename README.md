@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js PDF RAG Chat
 
-## Getting Started
+A small Next.js app for a chat-style AI interface powered by Google Gemini via the AI SDK.
 
-First, run the development server:
+## Features
+
+- Next.js App Router
+- AI SDK chat transport with streaming responses
+- Gemini model integration via `@ai-sdk/google`
+- Chat UI built with custom AI elements and Tailwind styling
+- Ready for future PDF / retrieval integrations
+
+## Stack
+
+- Next.js 16
+- React 19
+- TypeScript
+- AI SDK
+- Google Gemini
+
+## Prerequisites
+
+- Node.js 18+
+- pnpm
+- A Google API key for Gemini
+
+## Setup
+
+1. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Create a local environment file:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+cp env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Add your Gemini key:
 
-## Learn More
+```bash
+GOOGLE_GENERATIVE_AI_API_KEY=your_api_key_here
+```
 
-To learn more about Next.js, take a look at the following resources:
+You can also use `GEMINI_API_KEY` in code explicitly, but the default SDK provider looks for `GOOGLE_GENERATIVE_AI_API_KEY`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Run locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm dev
+```
 
-## Deploy on Vercel
+Then open:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```text
+http://localhost:3000/chat
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```text
+src/
+  app/
+    api/chat/route.ts
+    chat/page.tsx
+  components/
+    ai-elements/
+    ui/
+```
+
+## Important API note
+
+The chat route expects the AI SDK UI message payload shape, not a raw `{ prompt }` body. The client uses `useChat()` from `@ai-sdk/react`, so the server route should read `body.messages` and convert them with `convertToModelMessages()` before calling `streamText()`.
+
+## Useful commands
+
+```bash
+pnpm dev
+pnpm build
+pnpm lint
+```
+
+## Notes
+
+- This project currently contains unrelated TypeScript issues in some component files outside the chat route.
+- The chat route itself is validated separately before use.
+- If you want to add PDF ingestion or RAG retrieval later, the route is the correct extension point.
