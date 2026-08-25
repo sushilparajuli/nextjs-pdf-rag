@@ -11,6 +11,14 @@ import { auth } from "@clerk/nextjs/server";
 export async function processPdfFile(formData: FormData) {
   await auth.protect();
 
+  if (!db) {
+    return {
+      success: false,
+      error:
+        "Database is not configured. Set DATABASE_URL or NEON_DATABASE_URL in your environment.",
+    };
+  }
+
   try {
     const file = formData.get("pdf") as File;
     const bytes = await file.arrayBuffer();

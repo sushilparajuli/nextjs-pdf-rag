@@ -6,6 +6,9 @@ config({
   path: ".env.local",
 });
 
-const sql = neon(process.env.NEON_DATABASE_URL!);
+const connectionString =
+  process.env.NEON_DATABASE_URL ?? process.env.DATABASE_URL ?? null;
 
-export const db = drizzle(sql);
+export const hasDatabaseConfig = Boolean(connectionString);
+
+export const db = connectionString ? drizzle(neon(connectionString)) : null;

@@ -9,6 +9,12 @@ export async function searchDocuments(
   limit: number = 5,
   threshold: number = 0.5,
 ) {
+  if (!db) {
+    throw new Error(
+      "Database is not configured. Set DATABASE_URL or NEON_DATABASE_URL in your environment.",
+    );
+  }
+
   const embedding = await generateEmbedding(query);
 
   const similarity = sql<number>`1- (${cosineDistance(documents.embedding, embedding)})`;
