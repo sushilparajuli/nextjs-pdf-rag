@@ -38,9 +38,9 @@ export default function RAGChatBot() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.18),transparent_30%),linear-gradient(180deg,#020817_0%,#0f172a_100%)] text-slate-50">
-      <div className="mx-auto flex h-screen max-w-6xl flex-col px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-[calc(100vh-5rem)] max-w-6xl flex-col px-4 py-5 sm:px-6 lg:px-8">
         <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-white/10 bg-slate-900/70 shadow-2xl shadow-slate-950/60 backdrop-blur-sm">
-          <header className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
+          {/* <header className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-sky-300/80">
                 AI Assistant
@@ -52,7 +52,7 @@ export default function RAGChatBot() {
             <div className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-300">
               {status === "streaming" ? "Generating" : "Online"}
             </div>
-          </header>
+          </header> */}
 
           <div className="min-h-0 flex-1 overflow-hidden">
             <Conversation className="h-full">

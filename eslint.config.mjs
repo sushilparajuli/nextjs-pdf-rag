@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import clerkNext from "@clerk/eslint-plugin/next";
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -13,6 +14,23 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    plugins: { "@clerk/next": clerkNext },
+    rules: {
+      "@clerk/next/require-auth-protection": [
+        "error",
+        {
+          protected: ["**"],
+          public: ["src/app", "src/app/sign-in/**", "src/app/sign-up/**"],
+          resources: {
+            routeHandlers: true,
+            serverFunctions: true,
+            serverComponentEntrypoints: false, // Skip for now.
+          },
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;

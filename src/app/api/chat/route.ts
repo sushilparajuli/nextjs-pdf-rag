@@ -1,7 +1,9 @@
+import { auth } from "@clerk/nextjs/server";
 import { streamText, convertToModelMessages } from "ai";
 import { createGoogle } from "@ai-sdk/google";
 
 export async function POST(req: Request) {
+  await auth.protect();
   try {
     const body = await req.json();
     const messages = Array.isArray(body?.messages) ? body.messages : [];
