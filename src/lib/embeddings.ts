@@ -5,8 +5,13 @@ export async function generateEmbedding(text: string) {
   const input = text.replace(/\n/g, " ").trim();
 
   const { embedding } = await embed({
-    model: google.embeddingModel("text-embedding-004"),
+    model: google.embeddingModel("gemini-embedding-2"),
     value: input,
+    providerOptions: {
+      google: {
+        outputDimensionality: 1536, // Match the Postgres vector schema
+      },
+    },
   });
 
   return embedding;

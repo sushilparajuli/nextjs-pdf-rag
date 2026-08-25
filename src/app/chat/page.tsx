@@ -37,9 +37,9 @@ export default function RAGChatBot() {
   };
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.18),transparent_30%),linear-gradient(180deg,#020817_0%,#0f172a_100%)] text-slate-50">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(148,163,184,0.18),transparent_28%),linear-gradient(180deg,#f8fafc_0%,#eef2f7_100%)] text-slate-900 dark:bg-[radial-gradient(circle_at_top,rgba(96,165,250,0.18),transparent_30%),linear-gradient(180deg,#020817_0%,#0f172a_100%)] dark:text-slate-50">
       <div className="mx-auto flex h-[calc(100vh-5rem)] max-w-6xl flex-col px-4 py-5 sm:px-6 lg:px-8">
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-white/10 bg-slate-900/70 shadow-2xl shadow-slate-950/60 backdrop-blur-sm">
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-white/80 shadow-2xl shadow-slate-200/60 backdrop-blur-sm dark:border-white/10 dark:bg-slate-900/70 dark:shadow-slate-950/60">
           {/* <header className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-sky-300/80">
@@ -59,21 +59,21 @@ export default function RAGChatBot() {
               <ConversationContent className="px-4 py-5 sm:px-6">
                 {messages.length === 0 ? (
                   <div className="flex h-full items-center justify-center">
-                    <div className="max-w-md rounded-2xl border border-dashed border-slate-700 bg-slate-800/40 p-6 text-center text-slate-300 shadow-lg shadow-slate-950/20">
-                      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-sky-500/10 text-2xl text-sky-300">
+                    <div className="max-w-md rounded-2xl border border-dashed border-slate-300 bg-slate-100/80 p-6 text-center text-slate-600 shadow-lg shadow-slate-200/40 dark:border-slate-700 dark:bg-slate-800/40 dark:text-slate-300 dark:shadow-slate-950/20">
+                      <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-sky-500/10 text-2xl text-sky-600 dark:text-sky-300">
                         ✦
                       </div>
-                      <h2 className="text-lg font-semibold text-white">
+                      <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                         Ask anything
                       </h2>
-                      <p className="mt-2 text-sm text-slate-300">
+                      <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
                         Start a conversation and I’ll answer from the current
                         chat context.
                       </p>
                     </div>
                   </div>
                 ) : (
-                  <div className="mx-auto flex max-w-3xl flex-col gap-4">
+                  <div className="mx-auto flex w-full flex-col gap-4">
                     {messages.map((message) => (
                       <div
                         key={message.id}
@@ -93,8 +93,8 @@ export default function RAGChatBot() {
                                       <MessageContent
                                         className={
                                           message.role === "user"
-                                            ? "bg-sky-600 text-white"
-                                            : "border border-white/10 bg-slate-800 text-slate-100"
+                                            ? "bg-slate-200 text-slate-900 dark:bg-slate-700 dark:text-slate-50"
+                                            : "bg-white text-slate-900 ring-1 ring-slate-200 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-700"
                                         }
                                       >
                                         <MessageResponse>
@@ -114,10 +114,10 @@ export default function RAGChatBot() {
 
                     {(status === "submitted" || status === "streaming") && (
                       <div className="flex justify-start">
-                        <div className="rounded-2xl border border-white/10 bg-slate-800/80 px-4 py-3 text-slate-200 shadow-lg shadow-slate-950/20">
+                        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 shadow-lg shadow-slate-200/40 dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-200 dark:shadow-slate-950/20">
                           <div className="flex items-center gap-3">
-                            <Spinner className="text-sky-300" />
-                            <span className="text-sm text-slate-300">
+                            <Spinner className="text-sky-600 dark:text-sky-300" />
+                            <span className="text-sm text-slate-700 dark:text-slate-300">
                               Thinking…
                             </span>
                           </div>
@@ -131,26 +131,26 @@ export default function RAGChatBot() {
             </Conversation>
           </div>
 
-          <div className="border-t border-white/10 bg-slate-950/40 px-4 pb-4 pt-3 sm:px-6">
+          <div className="border-t border-slate-200 bg-slate-50/80 px-4 pb-4 pt-3 sm:px-6 dark:border-white/10 dark:bg-slate-950/40">
             <div className="mx-auto max-w-4xl">
               <PromptInput
                 onSubmit={handleSubmit}
-                className="overflow-hidden rounded-[22px] border border-white/10 bg-slate-800/80 shadow-lg shadow-slate-950/30"
+                className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-lg shadow-slate-200/40 dark:border-white/10 dark:bg-slate-800/80 dark:shadow-slate-950/30"
               >
                 <PromptInputBody>
                   <PromptInputTextarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    className="min-h-[60px] bg-transparent text-base text-slate-100 placeholder:text-slate-400"
+                    className="min-h-[60px] bg-transparent text-base text-slate-900 placeholder:text-slate-500 dark:text-slate-100 dark:placeholder:text-slate-400"
                     placeholder="What would you like to know?"
                   />
                 </PromptInputBody>
 
-                <PromptInputFooter className="justify-between border-t border-white/10 px-3 py-2">
+                <PromptInputFooter className="justify-between border-t border-slate-200 px-3 py-2 dark:border-white/10">
                   <PromptInputTools>
                     {/* Model selector, web search etc.. */}
                   </PromptInputTools>
-                  <PromptInputSubmit className="h-11 w-11 rounded-full bg-white text-slate-900 hover:bg-sky-200" />
+                  <PromptInputSubmit className="h-11 w-11 rounded-full bg-slate-900 text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-sky-200" />
                 </PromptInputFooter>
               </PromptInput>
             </div>

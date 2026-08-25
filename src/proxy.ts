@@ -1,10 +1,15 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
 export default clerkMiddleware(async (auth, req) => {
-  // Important: This is not an auth guarantee, only
-  // a performance optimization for signed-out users.
   const pathname = req.nextUrl.pathname;
+
   if (pathname === "/chat" || pathname.startsWith("/chat/")) {
+    const { isAuthenticated, redirectToSignIn } = await auth();
+
+    if (!isAuthenticated) return redirectToSignIn();
+  }
+
+  if (pathname === "/upload" || pathname.startsWith("/upload/")) {
     const { isAuthenticated, redirectToSignIn } = await auth();
 
     if (!isAuthenticated) return redirectToSignIn();
