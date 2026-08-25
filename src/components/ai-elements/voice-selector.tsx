@@ -43,23 +43,29 @@ interface VoiceSelectorContextValue {
 }
 
 const VoiceSelectorContext = createContext<VoiceSelectorContextValue | null>(
-  null
+  null,
 );
 
 export const useVoiceSelector = () => {
   const context = useContext(VoiceSelectorContext);
   if (!context) {
     throw new Error(
-      "VoiceSelector components must be used within VoiceSelector"
+      "VoiceSelector components must be used within VoiceSelector",
     );
   }
   return context;
 };
 
-export type VoiceSelectorProps = ComponentProps<typeof Dialog> & {
+export type VoiceSelectorProps = Omit<
+  ComponentProps<typeof Dialog>,
+  "defaultOpen" | "onOpenChange" | "open"
+> & {
   value?: string;
   defaultValue?: string;
+  defaultOpen?: boolean;
+  open?: boolean;
   onValueChange?: (value: string | undefined) => void;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export const VoiceSelector = ({
@@ -80,18 +86,24 @@ export const VoiceSelector = ({
 
   const [open, setOpen] = useControllableState({
     defaultProp: defaultOpen,
-    onChange: onOpenChange,
+    onChange: (nextOpen) => {
+      onOpenChange?.(nextOpen);
+    },
     prop: openProp,
   });
 
   const voiceSelectorContext = useMemo(
     () => ({ open, setOpen, setValue, value }),
-    [value, setValue, open, setOpen]
+    [value, setValue, open, setOpen],
   );
 
   return (
     <VoiceSelectorContext.Provider value={voiceSelectorContext}>
-      <Dialog onOpenChange={setOpen} open={open} {...props}>
+      <Dialog
+        onOpenChange={(nextOpen, _eventDetails) => setOpen(nextOpen)}
+        open={open}
+        {...props}
+      >
         {children}
       </Dialog>
     </VoiceSelectorContext.Provider>
@@ -496,7 +508,7 @@ export const VoiceSelectorPreview = ({
       onClick?.(event);
       onPlay?.();
     },
-    [onClick, onPlay]
+    [onClick, onPlay],
   );
 
   let icon = <PlayIcon className="size-3" />;
