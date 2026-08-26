@@ -1,5 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
+export const runtime = "experimental-edge";
+
 export default clerkMiddleware(async (auth, req) => {
   const pathname = req.nextUrl.pathname;
 
