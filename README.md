@@ -10,7 +10,7 @@ Upload PDF documents to automatically extract text, generate semantic vector emb
 
 - **Next.js 16 & React 19 App Router**: Modern server and client component architecture.
 - **AI SDK & Streaming Responses**: Real-time token streaming with `@ai-sdk/google` and `@ai-sdk/react`.
-- **Google Gemini Integration**: 
+- **Google Gemini Integration**:
   - `gemini-3.6-flash` for multi-step reasoning, tool execution, and grounded answer generation.
   - `gemini-embedding-2` with 1536 output dimensions for vector embeddings.
 - **RAG Knowledge Base & Tool Calling**: Autonomous tool-driven similarity search (`searchKnowledgeBase`) using cosine distance on Postgres vector embeddings.
@@ -64,6 +64,8 @@ The system operates across two primary pipelines: the **PDF Ingestion & Indexing
 ---
 
 ### 2. PDF Ingestion & Indexing Flow (`processPdfFile` Server Action)
+
+> **Upload guidance:** For best results, keep uploaded documents around 2MB or less and prefer text-based content formats when possible. Plain text and clean PDF source material chunk more effectively and produce more consistent embeddings than heavily formatted or noisy files.
 
 The document ingestion workflow is executed on the server via the `processPdfFile(formData)` Server Action in `src/app/upload/actions.ts`:
 
@@ -133,18 +135,18 @@ cp env.example .env.local
 
 ### Required Variables Reference
 
-| Variable Name | Required | Description | Example / Default |
-| :--- | :--- | :--- | :--- |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | **Yes** | Google Gemini API key used for chat generation (`gemini-3.6-flash`) and vector embeddings (`gemini-embedding-2`). | `AIzaSy...` |
-| `GEMINI_API_KEY` | Optional | Alternative alias for the Gemini API key (fallback if `GOOGLE_GENERATIVE_AI_API_KEY` is not set). | `AIzaSy...` |
-| `DATABASE_URL` | **Yes** | PostgreSQL connection string (e.g. Neon) with `pgvector` support. | `postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require` |
-| `NEON_DATABASE_URL` | Optional | Alternative alias for the database connection URL. | `postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require` |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | **Yes** | Clerk publishable key for client-side authentication. | `pk_test_...` |
-| `CLERK_SECRET_KEY` | **Yes** | Clerk secret key for server-side auth, middleware route protection, and server actions. | `sk_test_...` |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Optional | Custom sign-in route path for Clerk. | `/sign-in` |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Optional | Custom sign-up route path for Clerk. | `/sign-up` |
-| `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` | Optional | Redirect path after user logs in. | `/chat` |
-| `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` | Optional | Redirect path after user registers. | `/chat` |
+| Variable Name                         | Required | Description                                                                                                       | Example / Default                                                    |
+| :------------------------------------ | :------- | :---------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------- |
+| `GOOGLE_GENERATIVE_AI_API_KEY`        | **Yes**  | Google Gemini API key used for chat generation (`gemini-3.6-flash`) and vector embeddings (`gemini-embedding-2`). | `AIzaSy...`                                                          |
+| `GEMINI_API_KEY`                      | Optional | Alternative alias for the Gemini API key (fallback if `GOOGLE_GENERATIVE_AI_API_KEY` is not set).                 | `AIzaSy...`                                                          |
+| `DATABASE_URL`                        | **Yes**  | PostgreSQL connection string (e.g. Neon) with `pgvector` support.                                                 | `postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require` |
+| `NEON_DATABASE_URL`                   | Optional | Alternative alias for the database connection URL.                                                                | `postgresql://user:password@ep-xyz.neon.tech/neondb?sslmode=require` |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`   | **Yes**  | Clerk publishable key for client-side authentication.                                                             | `pk_test_...`                                                        |
+| `CLERK_SECRET_KEY`                    | **Yes**  | Clerk secret key for server-side auth, middleware route protection, and server actions.                           | `sk_test_...`                                                        |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL`       | Optional | Custom sign-in route path for Clerk.                                                                              | `/sign-in`                                                           |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL`       | Optional | Custom sign-up route path for Clerk.                                                                              | `/sign-up`                                                           |
+| `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` | Optional | Redirect path after user logs in.                                                                                 | `/chat`                                                              |
+| `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` | Optional | Redirect path after user registers.                                                                               | `/chat`                                                              |
 
 ---
 
@@ -180,7 +182,7 @@ cp env.example .env.local
 
 #### A. Enabling `pgvector` & Generating Migrations
 
-PostgreSQL requires the `vector` extension to store and query high-dimensional vector embeddings. 
+PostgreSQL requires the `vector` extension to store and query high-dimensional vector embeddings.
 
 If generating a custom migration for pgvector:
 
@@ -203,7 +205,8 @@ If generating a custom migration for pgvector:
    SELECT extname, extversion FROM pg_extension WHERE extname = 'vector';
    ```
 
-*Note: Migrations in `./migrations` include:*
+_Note: Migrations in `./migrations` include:_
+
 1. `0000_cuddly_tenebrous.sql`: Enables `CREATE EXTENSION IF NOT EXISTS vector;`
 2. `0001_amazing_korath.sql`: Creates `documents` table and HNSW cosine index.
 
@@ -224,6 +227,8 @@ providerOptions: {
 
 ### 5. Run the Application
 
+> **Recommended input format:** Use text-rich PDFs or plain text documents for the most effective chunking. Very large or highly formatted files may reduce chunk quality and slow vector generation, so keeping uploads under roughly 2MB is recommended.
+
 Start the local Next.js development server:
 
 ```bash
@@ -231,6 +236,7 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser:
+
 - **Landing Page**: `http://localhost:3000`
 - **PDF Upload (Admin)**: `http://localhost:3000/upload`
 - **RAG Chat Interface**: `http://localhost:3000/chat`
@@ -249,9 +255,9 @@ A sample document is included in the repository at `sample-pdf/earth.pdf` (cover
 2. **Chat with the Knowledge Base**:
    - Navigate to `/chat`.
    - Ask questions grounded in the sample document, for example:
-     - *"What is the orbital period and average orbital speed of Earth?"*
-     - *"What are the alternative names for Earth listed in the document?"*
-     - *"What was the significance of the Apollo 17 mission mentioned in the document?"*
+     - _"What is the orbital period and average orbital speed of Earth?"_
+     - _"What are the alternative names for Earth listed in the document?"_
+     - _"What was the significance of the Apollo 17 mission mentioned in the document?"_
 3. **Observe Autonomous RAG in Action**:
    - Watch Gemini dynamically invoke the `searchKnowledgeBase` tool with semantic search queries, fetch relevant vector matches, and stream back grounded responses.
 
@@ -301,15 +307,35 @@ nextjs-pdf-rag/
 
 ## 📜 Available Scripts
 
-| Script | Command | Description |
-| :--- | :--- | :--- |
-| `dev` | `pnpm dev` | Starts the Next.js development server at `http://localhost:3000` |
-| `build` | `pnpm build` | Builds the production application bundle |
-| `start` | `pnpm start` | Runs the built production server |
-| `lint` | `pnpm lint` | Runs ESLint checks |
+| Script  | Command      | Description                                                      |
+| :------ | :----------- | :--------------------------------------------------------------- |
+| `dev`   | `pnpm dev`   | Starts the Next.js development server at `http://localhost:3000` |
+| `build` | `pnpm build` | Builds the production application bundle                         |
+| `start` | `pnpm start` | Runs the built production server                                 |
+| `lint`  | `pnpm lint`  | Runs ESLint checks                                               |
 
 ---
 
 ## 🛡️ License
 
-Private project. All rights reserved.
+MIT License
+
+Copyright (c) 2026
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
