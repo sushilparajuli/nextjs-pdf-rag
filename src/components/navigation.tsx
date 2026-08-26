@@ -3,6 +3,8 @@
 import { Show, SignInButton, SignOutButton, SignUpButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const MoonIcon = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4">
@@ -31,6 +33,12 @@ const SunIcon = () => (
 );
 
 export const Navigation = () => {
+  const pathname = usePathname();
+  const isChatOrLanding =
+    pathname === "/" || pathname === "/chat" || pathname?.startsWith("/chat/");
+  const isUploadPage =
+    pathname === "/upload" || pathname?.startsWith("/upload/");
+
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     if (typeof window === "undefined") {
       return "light";
@@ -58,14 +66,14 @@ export const Navigation = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3">
           <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary shadow-sm ring-1 ring-primary/15">
             R
           </div>
           <div className="text-xl font-semibold tracking-tight text-foreground">
             VerityAI
           </div>
-        </div>
+        </Link>
 
         <div className="flex items-center gap-2 sm:gap-3">
           <button
@@ -76,6 +84,15 @@ export const Navigation = () => {
           >
             {theme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
+
+          {!isChatOrLanding && (
+            <Link
+              href="/chat"
+              className="inline-flex items-center justify-center rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            >
+              Try VerityAI
+            </Link>
+          )}
 
           <Show when="signed-out">
             <SignInButton mode="modal">
@@ -89,12 +106,14 @@ export const Navigation = () => {
           </Show>
 
           <Show when="signed-in">
-            <a
-              href="/upload"
-              className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800"
-            >
-              Upload Knowledge Base PDF
-            </a>
+            {!isUploadPage && (
+              <Link
+                href="/upload"
+                className="inline-flex items-center justify-center rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+              >
+                Upload Knowledge Base PDF
+              </Link>
+            )}
 
             <SignOutButton>
               <Button variant="outline" size="sm">
